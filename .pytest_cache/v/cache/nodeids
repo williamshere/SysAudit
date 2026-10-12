@@ -1,0 +1,20 @@
+[
+  "tests/test_cli.py::test_main_runs_collectors_and_writes",
+  "tests/test_cli.py::test_parse_args_defaults",
+  "tests/test_cli.py::test_parse_args_format_choices",
+  "tests/test_collectors.py::test_hardware_collect_degrades_without_wmi",
+  "tests/test_collectors.py::test_hardware_collect_uses_psutil_on_linux",
+  "tests/test_collectors.py::test_network_collect_returns_adapter_list",
+  "tests/test_collectors.py::test_os_info_collect_has_hostname",
+  "tests/test_collectors.py::test_run_all_never_raises_when_a_collector_explodes",
+  "tests/test_collectors.py::test_run_all_returns_all_sections",
+  "tests/test_collectors.py::test_security_subchecks_degrade_off_windows",
+  "tests/test_collectors.py::test_software_read_uninstall_key_parses_values",
+  "tests/test_collectors.py::test_software_unavailable_off_windows",
+  "tests/test_report.py::test_html_contains_all_sections",
+  "tests/test_report.py::test_html_escapes_hostile_values",
+  "tests/test_report.py::test_html_marks_unavailable_collectors",
+  "tests/test_report.py::test_json_round_trips",
+  "tests/test_report.py::test_write_reports_both",
+  "tests/test_report.py::test_write_reports_format_choices"
+]

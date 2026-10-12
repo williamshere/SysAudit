@@ -1,0 +1,9 @@
+# Runtime dependencies
+psutil>=5.9
+
+# Windows-only: WMI access and COM (Windows Update enumeration)
+wmi>=1.5.1; sys_platform == "win32"
+pywin32>=306; sys_platform == "win32"
+
+# Test tooling (not needed to run an audit)
+pytest>=7; extra == "test"
