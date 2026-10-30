@@ -25,3 +25,8 @@ desktop.ini
 # SysAudit runtime output (never commit real machine data)
 sysaudit-report-*.html
 sysaudit-inventory-*.json
+
+# Temporary drive files
+.tmp.*
+*.tmp
+
