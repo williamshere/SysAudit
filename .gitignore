@@ -30,3 +30,8 @@ sysaudit-inventory-*.json
 .tmp.*
 *.tmp
 
+
+# Local binaries and shortcuts
+*.exe
+*.lnk
+
