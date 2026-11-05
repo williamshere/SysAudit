@@ -39,7 +39,31 @@ def collect():
     data["os_release"] = platform.release()
     data["os_version"] = platform.version()
 
+
+    # Uptime and users via psutil
+    try:
+        import psutil  # noqa: PLC0415
+
+        boot_time = psutil.boot_time()
+        uptime_seconds = datetime.datetime.now().timestamp() - boot_time
+        days = int(uptime_seconds // 86400)
+        hours = int((uptime_seconds % 86400) // 3600)
+        minutes = int((uptime_seconds % 3600) // 60)
+
+        uptime_str = []
+        if days > 0: uptime_str.append(f"{days}d")
+        if hours > 0: uptime_str.append(f"{hours}h")
+        uptime_str.append(f"{minutes}m")
+        data["uptime"] = " ".join(uptime_str)
+
+        users = psutil.users()
+        data["logged_in_users"] = [u.name for u in users] if users else []
+    except Exception:
+        data["uptime"] = None
+        data["logged_in_users"] = []
+
     w = _wmi()
+
     if w is not None:
         try:
             oses = w.Win32_OperatingSystem()
@@ -52,11 +76,15 @@ def collect():
                 data["last_boot"] = _wmi_datetime(osys.LastBootUpTime)
         except Exception:
             pass
+
         try:
             systems = w.Win32_ComputerSystem()
             if systems:
                 cs = systems[0]
+                data["manufacturer"] = (cs.Manufacturer or "").strip() or None
+                data["model"] = (cs.Model or "").strip() or None
                 if cs.PartOfDomain:
+
                     data["domain"] = cs.Domain
                     data["workgroup"] = None
                 else:

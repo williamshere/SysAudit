@@ -157,6 +157,19 @@ def collect():
             pass
     data["disks"] = disks or {"available": False, "reason": "no disk data"}
 
+
+    # ---- Battery ----
+    battery = {}
+    if psutil is not None:
+        try:
+            bat = psutil.sensors_battery()
+            if bat:
+                battery["percent"] = getattr(bat, "percent", None)
+                battery["power_plugged"] = getattr(bat, "power_plugged", None)
+        except Exception:
+            pass
+    data["battery"] = battery
+
     # ---- GPU / motherboard / BIOS / serial / monitors (WMI only) ----
     gpus = []
     board = {}

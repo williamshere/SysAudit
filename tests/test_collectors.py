@@ -103,3 +103,32 @@ def test_os_info_collect_has_hostname():
     assert data["available"] is True
     assert data["hostname"]  # non-empty on any platform
     assert isinstance(data["platform"], str) and data["platform"]
+
+def test_hardware_collect_battery():
+    with mock.patch.object(hardware, "psutil") as m_psutil:
+        m_psutil.sensors_battery.return_value.percent = 85
+        m_psutil.sensors_battery.return_value.power_plugged = True
+
+        data = hardware.collect()
+
+        assert data["battery"]["percent"] == 85
+        assert data["battery"]["power_plugged"] is True
+
+def test_os_info_uptime_and_users():
+    import psutil
+
+    with mock.patch("psutil.boot_time", return_value=1000), \
+         mock.patch("psutil.users") as m_users, \
+         mock.patch("datetime.datetime") as m_datetime:
+
+        class MockUser:
+            def __init__(self, name):
+                self.name = name
+
+        m_users.return_value = [MockUser("alice"), MockUser("bob")]
+        m_datetime.now.return_value.timestamp.return_value = 1000 + 86400 + 3600 + 60
+
+        data = os_info.collect()
+
+        assert data["uptime"] == "1d 1h 1m"
+        assert data["logged_in_users"] == ["alice", "bob"]
