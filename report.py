@@ -77,6 +77,16 @@ def _hardware_section(hw):
                 ],
             )
         )
+
+    battery = hw.get("battery", {})
+    if battery and battery.get("percent") is not None:
+        plugged_str = " (Plugged in)" if battery.get("power_plugged") else " (On battery)"
+        parts.append(
+            "<h3>Battery</h3><table>"
+            + _kv_row("Charge", f"{battery.get('percent')}%{plugged_str}")
+            + "</table>"
+        )
+
     gpus = hw.get("gpus") or []
     if gpus:
         parts.append(
@@ -131,12 +141,16 @@ def _os_section(osd):
     return (
         "<table>"
         + _kv_row("Hostname", osd.get("hostname"))
+        + _kv_row("System Manufacturer", osd.get("manufacturer"))
+        + _kv_row("System Model", osd.get("model"))
         + _kv_row("Edition", osd.get("edition"))
         + _kv_row("Build", osd.get("build_number"))
         + _kv_row("Architecture", osd.get("architecture"))
         + _kv_row("Domain / Workgroup", domain)
         + _kv_row("OS installed", osd.get("install_date"))
         + _kv_row("Last boot", osd.get("last_boot"))
+        + _kv_row("Uptime", osd.get("uptime"))
+        + _kv_row("Logged-in Users", ", ".join(osd.get("logged_in_users", [])) if osd.get("logged_in_users") else None)
         + _kv_row(
             "Windows activated",
             {True: "Yes", False: "No"}.get(osd.get("windows_activated"), None),
