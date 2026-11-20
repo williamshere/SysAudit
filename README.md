@@ -65,10 +65,3 @@ The suite runs on any platform: Windows-only code paths are exercised through mo
 ## Privacy note
 
 Sample reports are never committed to this repo — real serial numbers, hostnames, and software lists stay on the audited machine.
-
-## Copyright
-
-Copyright (c) 2026 William Shere
-All rights reserved.
-
-SysAudit and all associated project files are proprietary to William Shere.
