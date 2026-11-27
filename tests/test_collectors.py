@@ -98,6 +98,30 @@ def test_security_subchecks_degrade_off_windows():
             assert data[key]["available"] is False, key
 
 
+def test_antivirus_product_state_decodes_current_and_outdated_signatures():
+    class Product:
+        def __init__(self, state):
+            self.displayName = "Test AV"
+            self.productState = state
+
+    class FakeWmi:
+        def __init__(self, state):
+            self.state = state
+
+        def AntiVirusProduct(self):
+            return [Product(self.state)]
+
+    with mock.patch.object(security, "_wmi", return_value=FakeWmi(397568)):
+        current = security._antivirus()["products"][0]
+    with mock.patch.object(security, "_wmi", return_value=FakeWmi(0x071100)):
+        outdated = security._antivirus()["products"][0]
+
+    assert current["enabled"] is True
+    assert current["up_to_date"] is True
+    assert outdated["enabled"] is True
+    assert outdated["up_to_date"] is False
+
+
 def test_os_info_collect_has_hostname():
     data = os_info.collect()
     assert data["available"] is True
