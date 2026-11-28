@@ -50,12 +50,13 @@ def _antivirus():
     try:
         for av in w.AntiVirusProduct():
             state = getattr(av, "productState", 0) or 0
-            # productState bits: 0x1000 == enabled, 0x100000 == up-to-date
+            # SecurityCenter encodes signature freshness in bits 4-7
+            # (zero means current).
             products.append(
                 {
                     "name": getattr(av, "displayName", "Unknown"),
                     "enabled": bool(state & 0x1000),
-                    "up_to_date": bool(state & 0x100000),
+                    "up_to_date": (state & 0x00F0) == 0,
                     "raw_state": hex(state),
                 }
             )

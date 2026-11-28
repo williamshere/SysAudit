@@ -98,6 +98,30 @@ def test_security_subchecks_degrade_off_windows():
             assert data[key]["available"] is False, key
 
 
+@pytest.mark.parametrize(
+    "state, up_to_date",
+    [(0x061100, True), (0x061110, False), (0x071100, True), (0x071110, False)],
+)
+def test_antivirus_product_state_decodes_current_and_outdated_signatures(state, up_to_date):
+    class Product:
+        def __init__(self, state):
+            self.displayName = "Test AV"
+            self.productState = state
+
+    class FakeWmi:
+        def __init__(self, state):
+            self.state = state
+
+        def AntiVirusProduct(self):
+            return [Product(self.state)]
+
+    with mock.patch.object(security, "_wmi", return_value=FakeWmi(state)):
+        product = security._antivirus()["products"][0]
+
+    assert product["enabled"] is True
+    assert product["up_to_date"] is up_to_date
+
+
 def test_os_info_collect_has_hostname():
     data = os_info.collect()
     assert data["available"] is True
